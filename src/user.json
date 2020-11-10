@@ -1,0 +1,27 @@
+[
+  {
+    "userId": "kwakky2",
+    "name": "곽경열",
+    "age": 26,
+    "sex": "male"
+  },
+  {
+    "userId": "kwakky3",
+    "name": "곽경진",
+    "age": 26,
+    "sex": "male"
+  },
+  {
+    "userId": "kwakky1",
+    "name": "양정욱",
+    "age": 26,
+    "sex": "male"
+  },
+  {
+    "userId": "kwakky123",
+    "name": "김사나",
+    "age": 26,
+    "sex": "female"
+  }
+
+]
