@@ -1,10 +1,14 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import MaterialTable from "material-table";
 import user from "../user.json"
+import index from "material-table";
 
 const Table = () => {
 
     const [userList, setUserList] = useState(user);
+
+    const checkBox = ["male", "female"]
+
 
     const columns = [
         {
@@ -21,30 +25,57 @@ const Table = () => {
         },
     ];
 
-    const onClick = (e) => {
+    const onChange = (e) => {
+
         const {target: {name, checked}} = e;
-
-        if(name === "male" && checked){
-            let maleUserList = userList.filter((element)=>{
-                return element.sex === name
+        if (name === "male") {
+            let maleUserList = Array.from(user).filter((element) => {
+                return element.sex === name;
             })
-            setUserList(maleUserList)
+            if(checked){
+                setUserList(maleUserList)
+            } else {
+                let femaleUserList = Array.from(user).filter((element) => {
+                    return element.sex === "female";
+                })
+                let list = [];
+                list.push(...userList);
+                list.push(...femaleUserList);
+                setUserList(list);
+                /*console.log(userList)*/
+            }
 
-        } else if(name==="female" && checked) {
-            let maleUserList = userList.filter((element)=>{
-                return element.sex === name
+        } else if (name === "female") {
+            let femaleUserList = Array.form(user).filter((element) => {
+                return element.sex === name;
             })
-            setUserList(maleUserList)
+            if(checked) {
+                const list = [...user]
+                list.push(...femaleUserList)
+                setUserList(list);
+            } else {
+                let maleUserList = user.filter((element) => {
+                    return element.sex === "male";
+                })
+                let list = [];
+                list.push(...userList);
+                list.push(...maleUserList);
+                setUserList(list);
+            }
         }
     }
-
+    console.log(userList)
     return (
         <>
             <form action="">
-            <label>남자</label>
-            <input type="checkbox" name={"male"} onClick={onClick} />
-            <label>여자</label>
-            <input type="checkbox" name={"female"} onClick={onClick} />
+                {checkBox.map((box, index) => {
+                    return(
+                        <>
+                        <label>{box}</label>
+                        <input type="checkbox" name={box} onChange={onChange} />
+                        </>
+                    )
+                })}
             </form>
             <MaterialTable
                 title={"회원정보"}
