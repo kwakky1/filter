@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import MaterialTable from "material-table";
 import user from "../user.json"
+import {filterGender} from "../reducer/FilterReducer";
 
 const Table = () => {
 
     const [userList, setUserList] = useState(user);
-
-
-
 
     const columns = [
         {
@@ -22,52 +20,17 @@ const Table = () => {
         {
             title: "성별", field: "sex"
         },
-    ];
+   ];
 
-    /*const onChange = (e) => {
-
-        const {target: {name, checked}} = e;
-        if (name === "male") {
-            let maleUserList = Array.from(user).filter((element) => {
-                return element.sex === name;
-            })
-            if (checked) {
-                setUserList(maleUserList)
-            } else {
-                let femaleUserList = Array.from(user).filter((element) => {
-                    return element.sex === "female";
-                })
-                let list = [];
-                list.push(...userList);
-                list.push(...femaleUserList);
-                setUserList(list);
-                console.log(userList)
-            }
-
-        } else if (name === "female") {
-            let femaleUserList = Array.form(user).filter((element) => {
-                return element.sex === name;
-            })
-            if (checked) {
-                const list = [...user]
-                list.push(...femaleUserList)
-                setUserList(list);
-            } else {
-                let maleUserList = user.filter((element) => {
-                    return element.sex === "male";
-                })
-                let list = [];
-                list.push(...userList);
-                list.push(...maleUserList);
-                setUserList(list);
-            }
-        }
-    }*/
+    useEffect(()=>{
+        console.log(gender)
+        filterGender(gender)
+    },[])
 
     // 리스트에서 filter 하고 싶은 값 배열로 만들기 < ex) const gender = {남자, 여자} >
     const getGender = (data) =>{
         const genders = [];
-        data.map((person) => {
+        data.forEach((person) => {
             if(person.sex) {
                 if(genders.indexOf(person.sex) === -1) {
                     genders.push(person.sex)
@@ -84,25 +47,34 @@ const Table = () => {
         const index = gender.indexOf(e.target.value)
         if(e.target.checked){
             gender.push(e.target.value);
-        } else
+        } else {
             gender.splice(index, 1);
+            const list = [];
+            user.forEach((element) => {
+                if(element.sex === gender){
+                    list.push(element);
+                }
+            })
+            setUserList(list);
+        }
     }
+
+    const filteredGender = userList.sex;
 
     return (
         <>
-            <form action="">
+            <form style={{display: "flex"}}>
                 {gender.map((gender, index) => {
                     return(
-                        <>
+                        <div key={index}>
                             <label htmlFor={gender}>{gender}</label>
                             <input
                                 value={gender}
                                 type="checkbox"
-                                onChange={(e)=> genderHandle(e, gender)}
-                                key={index}
+                                onChange={(e)=> genderHandle(e, filteredGender)}
                                 defaultChecked={true}
                             />
-                        </>
+                        </div>
                     )
                 })}
             </form>
