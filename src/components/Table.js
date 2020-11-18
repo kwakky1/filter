@@ -1,11 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import MaterialTable from "material-table";
 import user from "../user.json"
-import {filterGender} from "../reducer/FilterReducer";
+import CheckBox from "./CheckBox"
 
 const Table = () => {
 
     const [userList, setUserList] = useState(user);
+    const [filtering, setFiltering] = useState({
+        gender: [],
+        age: []
+    })
 
     const columns = [
         {
@@ -22,67 +26,71 @@ const Table = () => {
         },
    ];
 
-    useEffect(()=>{
-        console.log(gender)
-        filterGender(gender)
-    },[])
+    const [color, setColor] = useState("black")
 
-    // 리스트에서 filter 하고 싶은 값 배열로 만들기 < ex) const gender = {남자, 여자} >
-    const getGender = (data) =>{
-        const genders = [];
-        data.forEach((person) => {
-            if(person.sex) {
-                if(genders.indexOf(person.sex) === -1) {
-                    genders.push(person.sex)
-                }
-            }
-        })
-        return genders;
+    const selectHandle = (e) => {
+        setColor(e.target.value)
     }
 
-    const gender = getGender(user)
+    const handleFilters = (filters, category) => {
+        const newFilters = {...filtering}
+        newFilters[category] = filters
+        if(category === "age") {
 
-
-    const genderHandle = (e, gender) =>{
-        const index = gender.indexOf(e.target.value)
-        if(e.target.checked){
-            gender.push(e.target.value);
-        } else {
-            gender.splice(index, 1);
-            const list = [];
-            user.forEach((element) => {
-                if(element.sex === gender){
-                    list.push(element);
-                }
-            })
-            setUserList(list);
+        }
+        if(category === "gender") {
+            showFilterResults(newFilters)
+            setFiltering(newFilters)
         }
     }
 
-    const filteredGender = userList.sex;
+    const showFilterResults = (filters) => {
+        console.log(filters.gender.length)
+        if(filters.gender.length === 0) {
+            setUserList(user)
+        } else {
+            const filteredResult = Array.from(user).filter((user)=>{
+                return filters.gender.indexOf(user.sex) !== -1
+            })
+            setUserList(filteredResult);
+        }
+    }
+
 
     return (
         <>
-            <form style={{display: "flex"}}>
-                {gender.map((gender, index) => {
-                    return(
-                        <div key={index}>
-                            <label htmlFor={gender}>{gender}</label>
-                            <input
-                                value={gender}
-                                type="checkbox"
-                                onChange={(e)=> genderHandle(e, filteredGender)}
-                                defaultChecked={true}
-                            />
-                        </div>
-                    )
-                })}
-            </form>
+            <CheckBox
+                handleFilters = {filters => handleFilters(filters, "gender")}
+            />
             <MaterialTable
                 title={"회원정보"}
                 columns={columns}
                 data={userList}
             />
+            <div>
+                <select name="color" onChange={selectHandle}>
+                    <option value="black">검정색</option>
+                    <option value="yellow">노란색</option>
+                    <option value="red">빨간색</option>
+                    <option value="blue">파란색</option>
+                </select>
+            </div>
+            {
+                (color === 'red') &&
+                <h1 style={{color: "red"}}>곽경열</h1>
+            }
+            {
+                (color === 'blue') &&
+                <h1 style={{color: "blue"}}>곽경열</h1>
+            }
+            {
+                (color === 'yellow') &&
+                <h1 style={{color: "yellow"}}>곽경열</h1>
+            }
+            {
+                (color === 'black') &&
+                <h1>곽경열</h1>
+            }
             
         </>
     );
